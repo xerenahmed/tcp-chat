@@ -29,7 +29,7 @@ async fn accept_loop(addr: impl ToSocketAddrs) -> Result<()> {
     let encryptor = new_magic_crypt!(password.trim(), 256);
 
     let listener = TcpListener::bind(addr).await?;
-    let (broker_sender, broker_receiver) = mpsc::unbounded(); // 1
+    let (broker_sender, broker_receiver) = mpsc::unbounded();
     let _broker_handle = task::spawn(broker_loop(broker_receiver));
 
     let mut incoming = listener.incoming();
@@ -122,8 +122,8 @@ async fn broker_loop(mut events: Receiver<Event>) -> Result<()> {
                     Entry::Occupied(..) => (),
                     Entry::Vacant(entry) => {
                         let (client_sender, client_receiver) = mpsc::unbounded();
-                        entry.insert(client_sender); // 4
-                        spawn_and_log_error(connection_writer_loop(client_receiver, stream)); // 5
+                        entry.insert(client_sender);
+                        spawn_and_log_error(connection_writer_loop(client_receiver, stream));
                     }
                 }
             }
